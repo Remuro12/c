@@ -1,0 +1,36 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+int main()
+{
+    int a[8], b[8], used[8];
+    for (int i = 0; i < 8; ++i)
+    {
+        scanf("%d", &a[i]);
+        used[i] = 0;
+    }
+    for (int i = 0; i < 8; ++i)
+    {
+        scanf("%d", &b[i]);
+    }
+    bool ans = true;
+    for (int i = 0; (i < 8) && ans; ++i)
+    {
+        bool cur = false;
+        for (int j = 0;(j < 8) && !cur; ++j)
+        {
+            if (!used[j] && (a[i] == b[j]))
+            {
+                cur = true;
+                used[j] = 1;
+            }
+        }
+        if (!cur)
+            ans = false;
+    }
+    if (ans)
+        printf("%s\n","yes");
+    else
+        printf("%s\n","no");
+
+} // 1.5
