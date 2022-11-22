@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+//#define int long long
+
+struct Date {
+    int Day, Month, Year;
+};
+int key(struct Date* base, int i, int b)
+{
+    if (b == 2)
+        return (base[i].Year - 1970);
+    if (b == 1)
+        return base[i].Month - 1;
+    return base[i].Day - 1;
+}
+void dsort(struct Date* base, int n, int b, int alphsz)
+{
+    int count[alphsz];
+    for (int i = 0; i < alphsz; ++i)
+        count[i] = 0;
+    for (int i = 0; i < n; ++i)
+        ++count[key(base, i, b)];
+    for (int i = 1; i < alphsz; ++i)
+    {
+        count[i] += count[i - 1];
+    }
+    struct Date d[n];
+    int i = n - 1;
+    while (i >= 0)
+    {
+        int k = key(base, i, b);
+        d[count[k] - 1] = base[i];
+        --count[k];
+        --i;
+    }
+    for (int j = 0; j < n; ++j)
+        base[j] = d[j];
+}
+
+
+signed main()
+{
+    int n, x;
+    scanf("%d", &n);
+    struct Date a[n];
+    for (int i = 0; i < n; ++i)
+    {
+        scanf("%04d %02d %02d", &a[i].Year, &a[i].Month, &a[i].Day);
+    }
+    int AlphSzs [] = {31, 12, 62};
+    for (int i = 1; i < 3; ++i)
+    {
+        dsort(a, n, i, AlphSzs[i]);
+    }
+    //start s 0!!
+
+    for (int j = 0; j < n; ++j)
+    {
+        printf("%04d %02d %02d\n", a[j].Year, a[j].Month, a[j].Day);
+    }
+
+} //2.10
