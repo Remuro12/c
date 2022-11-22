@@ -1,0 +1,50 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+int main(int argc, char ** argv) {
+    if (argc < 4)
+    {
+        printf("Usage: frame <height> <width> <text>\n");
+        return 0;
+    }
+    unsigned int h = strtol(argv[1], NULL, 10), w = strtol(argv[2], NULL, 10);
+    ++w;
+    unsigned int tlen = strlen(argv[3]);
+    char* text = malloc(tlen + 1);
+    strcpy(text, argv[3]);
+    if ((h < 3)  || (strlen(text) > w - 2))
+    {
+        free(text);
+        printf("Error\n");
+        return 0;
+    }
+    unsigned int sz = h * w;
+    char* ans = malloc((sz + 1) * sizeof(char));
+    ans[sz] = '\0';
+
+    char* bord = malloc(w * sizeof(char));
+    memset(bord, '*', w - 1);
+    bord[w - 1] = '\n';
+
+    char* mid = malloc(w * sizeof(char));
+    memset(mid, ' ', w);
+    mid[w - 1] = '\n';
+    mid[0] = mid[w - 2] = '*';
+
+    strncpy(&ans[0], bord, w);
+    for (int i = w; i < (sz - 1); i += w)
+    {
+//        printf("%d\n", i);
+        strncpy(&ans[i], mid, w);
+    }
+    strncpy(&ans[sz - w], bord, w - 1);
+    unsigned int start = (h - 1) / 2 * w, leftbord = (w - 1 - tlen) / 2;
+    strncpy(&ans[start + leftbord], text, tlen);
+    for (int i = 0; i < sz; ++i)
+        printf("%c", ans[i]);
+    free(ans);
+    free(mid);
+    free(bord);
+    free(text);
+    return 0;
+} //1.17
