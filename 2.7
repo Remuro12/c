@@ -1,0 +1,92 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int n = 10, maxint = 1000;
+///!!!!!!!! maxint maxINT
+int a[] = {1, 9, 8, 7, 2, 5, 6, 3, 4, 10, 2};
+
+void merge (int* base, int l , int m, int r)
+{
+    int* t = malloc((r - l) * sizeof(int));
+    int u1 = l;
+    int u2 = m;
+    int cur1, cur2, i = 0;
+    while ((u1 < m) || (u2 < r))
+    {
+        if (u1 == m)
+            cur1 = maxint;
+        else
+            cur1 = *(base + u1);
+
+        if (u2 == r)
+            cur2 = maxint;
+        else
+            cur2 = *(base + u2);
+
+        if (cur1 < cur2)
+        {
+            t[i] = cur1;
+            ++u1;
+        } else
+        {
+            t[i] = cur2;
+            ++u2;
+        }
+        ++i;
+    }
+    for (int j = 0; j < (r - l); ++j)
+    {
+        base[l + j] = t[j];
+    }
+}
+void swap (int * base, int i, int j)
+{
+    int* t = malloc(sizeof(int));
+    memcpy(t, base + i, sizeof(int));
+    memcpy(base + i, base + j, sizeof(int));
+    memcpy(base + j, t, sizeof(int));
+}
+void inssort(int* base, int l, int r)
+{
+    int i = l;
+    int len = r - l;
+    while (i < r)
+    {
+        int loc = i - 1;
+        while ((loc >= 0) && (*(base + loc) > * (base + loc + 1)))
+        {
+            swap(base,loc, loc + 1);
+            --loc;
+        }
+        ++i;
+    }
+
+}
+void mergesort(int* base, int l, int r)
+{
+
+    if((r - l) > 5)
+    {
+        size_t m = (l + r) / 2;
+        mergesort(base, l, m);
+        mergesort(base, m, r);
+        merge(base, l, m, r);
+    }
+    else if ((r - l) > 1)
+    {
+        inssort(base, l, r);
+        return;
+    }
+
+}
+
+
+
+int main()
+{
+//    bubblesort(4, compare, swap);
+    inssort(a, 0, n);
+    for (int i = 0; i < n; ++i)
+        printf("%d ", a[i]);
+} //2.7 merge
