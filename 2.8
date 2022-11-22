@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int maxint = 1000;
+///!!!!!!!! maxint maxINT
+//границы - отрезки!!!
+void swap (int * base, int i, int j)
+{
+    int* t = malloc(sizeof(int));
+    memcpy(t, base + i, sizeof(int));
+    memcpy(base + i, base + j, sizeof(int));
+    memcpy(base + j, t, sizeof(int));
+}
+void selectsort(int * base, int l, int r)
+{
+    int j = r;
+    while (j > 0)
+    {
+        int k = j;
+        int i = j - 1;
+        while (i >= l)
+        {
+            if (*(base + k) < *(base + i))
+                k = i;
+            --i;
+        }
+        swap(base, j, k);
+        --j;
+    }
+}
+int partition(int* base, int l, int r)
+{
+    int i = l;
+    int j = l;
+    while (j < r)
+    {
+        if (*(base + j) < *(base + r))
+        {
+            swap(base, i, j);
+            ++i;
+        }
+        ++j;
+    }
+    swap(base, i, r);
+    return i;
+}
+void qcksort(int* base, int l, int r, int m)
+{
+
+    if((r - l) > (m - 2))
+    {
+        int div = partition(base, l, r);
+        qcksort(base, l, div - 1, m);
+        qcksort(base, div + 1, r, m);
+    }
+    else if ((r - l) > 0)
+    {
+        selectsort(base, l, r);
+        return;
+    }
+
+}
+
+
+//int b[] = {5, 3, 2, 4, 1};
+int main()
+{
+//    bubblesort(4, compare, swap);
+    int n, m;
+    scanf("%d", &n);
+    scanf("%d", &m);
+    int a[n];
+    for (int i = 0; i < n; ++i)
+        scanf("%d", &a[i]);
+    qcksort(a, 0, n - 1, m);
+    for (int i = 0; i < n; ++i)
+        printf("%d ", a[i]);
+} //2.8 qsort
