@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+char* fibstr(int n) {
+    char* x = malloc(sizeof(char) * 2);
+    char* y = malloc(sizeof(char) * 2);
+    strcpy(x, "a");
+    strcpy(y, "b");
+    if (n == 1)
+    {
+        return x;
+    }
+    if (n == 2)
+    {
+        return y;
+    } else
+    {
+        int lx, ly;
+        lx = ly = 1;
+        for (int i = 3; i <= n; ++i)
+        {
+            char * t = malloc ((ly + 1) * sizeof(char));
+            t[ly] = '\0';
+            memcpy(t, y, ly * sizeof(char));
+            y = realloc(y, lx + ly + 1);
+            memcpy(y, x, lx * sizeof(char));
+            memcpy(y + lx * sizeof(char), t, ly * sizeof(char));
+            y[lx + ly] = '\0';
+            x = realloc(x, ly * sizeof(char));
+            memcpy(x, t, ly * sizeof(char));
+            x[ly] = '\0';
+            int lt = ly;
+            ly += lx;
+            lx = lt;
+        }
+    }
+    free(x);
+    return y;
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+    char * res = fibstr(n);
+    printf("%s", res);
+    free(res);
+    return 0;
+} //1.15
