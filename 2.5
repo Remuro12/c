@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #define int long long
-int isspace (char c)
+int isSpace (char c)
 {
     return c == '\0' || c == '\n'   || c == ' ';
 }
@@ -15,7 +15,7 @@ int wc (char * src)
     int isword = 0;
     for(int i = 0; i < n; ++i)
     {
-        if (!isspace(src[i]))
+        if (!isSpace(src[i]))
         {
             isword = 1;
         }
@@ -38,12 +38,12 @@ char ** extract (char *src)
     int cur = 0;
     for(int i = 0; i < n; ++i)
     {
-        if (!isspace(src[i]) && (!isword))
+        if (!isSpace(src[i]) && (!isword))
         {
             isword = 1;
             lbord = i;
         }
-        else if (isspace(src[i]) && isword)
+        else if (isSpace(src[i]) && isword)
         {
             words = realloc(words, (cur + 1) * sizeof(char*));
             words[cur] = calloc(i - lbord, sizeof(char));
@@ -64,22 +64,54 @@ char ** extract (char *src)
     return words;
 }
 char ** words;
-void csort(char *src)
+void csort(char *src, char *dest)
 {
     words = extract(src);
-    int wnum = wc(src);
+    int wnum = wc(src), tl = 0;
+    int l[wnum];
     for (int i = 0; i < wnum; ++i)
     {
-        printf("%s", words[i]);
+        l[i] = strlen(words[i]);
+        tl += l[i];
     }
-
+    tl += wnum - 1;
+    if (tl < 0)
+        tl = 0;
+    int c[wnum];
+    for (int i = 0; i < wnum; ++i)
+        c[i] = 0;
+    int j = 0;
+    while(j < wnum - 1)
+    {
+        int i = j + 1;
+        while (i < wnum)
+        {
+            if (l[i] < l[j])
+                c[j] += 1 + l[i];
+            else
+                c[i] += 1 + l[j];
+            ++i;
+        }
+        ++j;
+    }
+    for (int i = 0; i < wnum; ++i)
+    {
+        strncpy(dest + c[i], words[i], l[i]);
+        dest[c[i] + l[i]] = ' ';
+    }
+    dest[tl] = 0;
 }
 
 
 signed main()
 {
-    char * s = "aaa  bbb  ccc  ddd";
-    csort(s);
+    char * s = "aa cdaadcc vs  xxx   uuuuuuuuQfvsfhj    qweaq d f ss  dderrrd";
+    char dest[1000];
+    for (int i = 0; i < 1000; ++i)
+        dest[i] = '*';
+    csort(s, dest);
+
+    printf("%s\n", dest);
 
 
-} //2.5 extract
+}
