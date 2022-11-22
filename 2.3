@@ -1,0 +1,48 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int a[] = {2, 3, 10, 4};
+void swap (unsigned long i, unsigned long j)
+{
+    int t = a[i];
+    a[i] = a[j];
+    a[j] = t;
+}
+int compare (unsigned long i, unsigned long j)
+{
+    if (a[i] < a[j])
+        return -1;
+    else if (a[i] == a[j])
+        return 0;
+    else
+        return 1;
+}
+void bubblesort(unsigned long nel,
+                int (*compare)(unsigned long i, unsigned long j),
+                void (*swap)(unsigned long i, unsigned long j))
+{
+    int lbord = -1, rbord = nel;
+    while (lbord < rbord)
+    {
+        for (int i = lbord + 1; (i + 1) < rbord; ++i)
+        {
+            if (compare(i, i + 1) > 0)
+                swap(i, i + 1);
+        }
+        --rbord;
+        for (int i = rbord - 1; (i - 1) > lbord; --i)
+        {
+            if (compare(i - 1, i) > 0)
+                swap(i - 1, i);
+        }
+        ++lbord;
+    }
+}
+
+int main()
+{
+    bubblesort(4, compare, swap);
+    for (int i = 0; i < 4; ++i)
+        printf("%d ", a[i]);
+} //2.3
