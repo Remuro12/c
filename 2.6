@@ -1,0 +1,89 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+char* a[] = {"a", "taaa", "abaaa", "aca", "d"};
+
+
+void swap (void * base, size_t width, int i, int j)
+{
+    void *left = base + i * width, *right = base + j * width;
+    void *tmp = malloc(width);
+    memcpy(tmp, right, width);
+    memcpy(right, left, width);
+    memcpy(left, tmp, width);
+}
+int count (char * x)
+{
+    int ans = 0;
+    for (int i = 0; i < strlen(x); ++i)
+    {
+        if (x[i] == 'a')
+            ++ans;
+    }
+}
+int compare (void * base, size_t width, int i, int j)
+{
+    char **left = base + i * width;
+    char **right = base + j * width;
+    char* x = * left, *y = * right;
+    int xa = count(x), ya = count(y);
+    if (xa < ya)
+        return -1;
+    else if (xa == ya)
+        return 0;
+    else
+        return 1;
+}
+void heapify(void * base, size_t width, size_t nel, int i,
+           int (*compare)(void * base, size_t width, int a, int b), void (*swap)(void * base, size_t width, int a, int b))
+{
+    if (i >= nel)
+        return;
+    while (1)
+    {
+        int l = 2 * i + 1;
+        int r = 2 * i + 2;
+        int j = i;
+        if (l < nel && compare(base, width, i, l) < 0) {
+            i = l;
+        }
+        if (r < nel && compare(base, width, i, r) < 0) {
+            i = r;
+        }
+        if (i == j) {
+            break;
+        }
+        swap(base, width, i, j);
+    }
+}
+void build (void * base, size_t width, size_t nel,
+        int (*compare)(void * base, size_t width, int a, int b),
+        void (*swap)(void * base, size_t width, int a, int b))
+{
+    for (int i = nel / 2; i >= 0; --i)
+    {
+        heapify(base, width, nel, i, compare, swap);
+    }
+}
+void hsort(void * base, size_t width, size_t nel,
+        int (*compare)(void * base, size_t width, int a, int b),
+        void (*swap)(void * base, size_t width, int a, int b))
+{
+    build(base, width, nel, compare, swap);
+    for (int sz = nel; sz > 0; --sz)
+    {
+        swap(base, width, 0, sz - 1);
+        heapify(base, width, sz - 1, 0, compare, swap);
+    }
+}
+
+
+int main()
+{
+//    bubblesort(4, compare, swap);
+    hsort(a, sizeof(char*), 5, compare, swap);
+
+    for (int i = 0; i < 5; ++i)
+        printf("%s ", a[i]);
+} //2.6 hsort
