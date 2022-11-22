@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+unsigned int min (unsigned int a, unsigned b)
+{
+    if (a > b)
+        return b;
+    else
+        return a;
+}
+int strdiff(char * a, char * b)
+{
+    unsigned la = strlen(a) + 1, lb = strlen(b) + 1, i = 0, j;
+    while (i < min(la, lb))
+    {
+        j = 0;
+        while ((j < 8) && ((a[i] & (1 << j)) == (b[i] & (1 << j))))
+        {
+//            printf("%d", (a[i] & (1 << j)) >> j);
+            ++j;
+        }
+        if (j < 8)
+            return (int)i * 8 + (int)j;
+        ++i;
+    }
+    if ((i == la) && (i == lb))
+        return -1;
+    else
+        return (int)i * 8;
+}
+
+int main() {
+    printf("%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n%d\n",
+           strdiff("", "The quick brown fox jumps over the lazy dog"),
+           strdiff("T", "The quick brown fox jumps over the lazy dog"),
+           strdiff("The quick ", "The quick brown fox jumps over the lazy dog"),
+           strdiff("The quick brown fox ", "The quick brown fox jumps over the lazy dog"),
+           strdiff("The quick brown fox jumps over the lazy do", "The quick brown fox jumps over the lazy dog"),
+           strdiff("The quick brown fox jumps over the lazy dog", ""),
+           strdiff("The quick brown fox jumps over the lazy dog", "T"),
+           strdiff("The quick brown fox jumps over the lazy dog", "The quick "),
+           strdiff("The quick brown fox jumps over the lazy dog", "The quick brown fox "),
+           strdiff("The quick brown fox jumps over the lazy dog", "The quick brown fox jumps over the lazy dog"),
+           strdiff("", ""),
+           strdiff("The quick brown fox jumps over the lazy dog", "The quick brown fox jumps over the lazy do"));
+    return 0;
+
+
+} //1.16
