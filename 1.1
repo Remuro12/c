@@ -1,0 +1,29 @@
+#include <stdio.h>
+int main()
+{
+    int n, x0;
+    scanf("%d%d", &n, &x0);
+    int a[n + 1];
+    for (int i = 0; i < (n + 1); ++i)
+    {
+        scanf("%d", &a[i]);
+    }
+    int ans1 = 0, ans2 = 0;
+    for (int i = 0; i < (n + 1); ++i)
+    {
+        ans1 = ans1 * x0 + a[i];
+    }
+    int b[n];
+    for (int i = 0; i < n; ++i)
+    {
+        b[i] = a[i] * (n - i);
+    }
+    for (int i = 0; i < n; ++i)
+    {
+        ans2 = ans2 * x0 + b[i];
+        printf("%d\n", b[i]);
+    }
+    printf("%d\n", ans1);
+    printf("%d\n", ans2);
+    return 0;
+}
