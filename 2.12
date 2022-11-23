@@ -20,11 +20,9 @@ int* prefix(char*s)
     }
     return p;
 }
-//int main(int argc, char **argv)
-int main()
+int main(int argc, char **argv)
 {
-    char s[1000];
-    scanf("%s", &s);
+    char *s = argv[1];
     int * p = prefix(s);
     for (int i = 0; i < strlen(s); ++i)
     {
