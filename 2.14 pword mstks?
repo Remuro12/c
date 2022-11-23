@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int* prefix(char*s)
+{
+    int n = strlen(s);
+    int * p = calloc(n, sizeof(int));
+    int i = 1, t = 0;
+    while (i < n)
+    {
+        while ((t > 0) && (s[t] != s[i]))
+        {
+            t = p[t - 1];
+        }
+        if (s[t] == s[i])
+            ++t;
+        p[i] = t;
+        ++i;
+    }
+    return p;
+}
+int cmp(char * s, char * txt)
+{
+    int * p = prefix(s);
+    int q = 0, k = 0;
+    int ltxt = strlen(txt);
+    int ls = strlen(s);
+    while(k < ltxt)
+    {
+        while ((q > 0) && (s[q] != txt[k]))
+        {
+            q = p[q - 1];
+        }
+        if (s[q] == txt[k])
+            ++q;
+        if (q == 0)
+            return 0;
+        ++k;
+    }
+    return 1;
+}
+int main()
+{
+    char*s = "abcdah";
+    char*txt = "abcdahx";
+//    char*s = argv[1];
+//    char*txt = argv[2];
+    if(cmp(s, txt))
+        printf("yes");
+    else
+        printf("no");
+}
