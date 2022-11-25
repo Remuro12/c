@@ -1,9 +1,4 @@
 
-//typedef struct User {
-//    char *login;
-//    char *password;
-//    int id;
-//} User;
 
 #include <stdio.h>
 #include <stdlib.h>
