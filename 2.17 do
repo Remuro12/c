@@ -1,0 +1,93 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define int long long
+int inf = 2e9;
+int * a;
+int * t;
+int max (int x, int y)
+{
+    if (x >= y)
+        return x;
+    else
+        return y;
+}
+void build (int l, int r, int v)
+{
+
+    if (l + 1 == r)
+    {
+        t[v] = a[l];
+        return;
+    }
+    int m = (l + r) / 2;
+    int left = 2 * v + 1;
+    int right = 2 * v + 2;
+    build(l, m, left);
+    build(m, r, right);
+    t[v] = max(t[left], t[right]);
+}
+int ask (int l, int r, int v, int askl, int askr)
+{
+    if ((askl >= r) || (askr <= l))
+        return -inf;
+    else if (l >= askl && r <= askr)
+        return t[v];
+    else
+    {
+        int m = (l + r) / 2;
+        int left = 2 * v + 1;
+        int right = 2 * v + 2;
+        return max(ask(l, m, left, askl, askr), ask(m, r, right, askl, askr));
+    }
+}
+void update (int l, int r, int v, int ind, int val)
+{
+    if (l + 1 == r)
+    {
+        a[l] =  val;
+        t[v] = val;
+        return;
+    }
+    int m = (l + r) / 2;
+    int left = 2 * v + 1;
+    int right = 2 * v + 2;
+    if (ind < m)
+        update(l, m, left, ind, val);
+    else
+        update(m, r, right, ind, val);
+    t[v] = max(t[left], t[right]);
+}
+signed main()
+{
+    int n, m;
+    scanf("%lld", &n);
+    int pow = 1;
+    while (pow < n)
+        pow *= 2;
+    a = realloc(a, sizeof(int) * pow);
+    t = realloc(t, sizeof(int) * 2 * pow);
+    for (int i = 0; i < pow; ++i)
+    {
+        if (i < n)
+            scanf("%lld", &a[i]);
+        else
+            a[i] = -inf;
+    }
+    scanf("%lld", &m);
+    build(0, pow, 0);
+    int x, y;
+    for (int i = 0; i < m; ++i)
+    {
+        char s[4];
+        scanf("%s %lld %lld", s, &x, &y);
+        int cur = strcmp(s, "MAX");
+        if (strcmp(s, "MAX") == 0)
+        {
+            ++y;
+            int res = ask(0, pow, 0, x, y);
+            printf("%lld\n", res);
+        } else
+            update(0, pow, 0, x, y);
+    }
+}
