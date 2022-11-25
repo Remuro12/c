@@ -1,0 +1,147 @@
+
+//typedef struct User {
+//    char *login;
+//    char *password;
+//    int id;
+//} User;
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define int long long
+int inf = 2e9;
+typedef struct Tree{
+    int * a;
+    int * t;
+    int * ispeak;
+    int n;
+    int pow;
+} Tree;
+int isp(int * a, int i, int n)
+{
+    if (n <= 1)
+        return 1;
+    if (i == 0)
+    {
+        if (a[1] <= a[0])
+            return 1;
+        return 0;
+    }
+    if (i == n - 1)
+    {
+        if (a[n - 2] <= a[n - 1])
+            return 1;
+        return 0;
+    }
+    if ((a[i - 1] <= a[i]) && (a[i + 1] <= a[i]))
+        return 1;
+    return 0;
+}
+Tree ch_size(int n)
+{
+    Tree D;
+    int x = 1;
+    while (x < n)
+        x *= 2;
+    D.a = calloc(x, sizeof(int));
+    D.t = calloc(2 * x, sizeof(int));
+    D.ispeak = calloc(x, sizeof(int));
+    D.n = n;
+    D.pow = x;
+//    for (int i = 0; i < D.n; ++i)
+//    {
+//        printf("%lld ", D.a[i]);
+//    }
+    return D;
+}
+void build (int l, int r, int v, struct Tree D)
+{
+
+    if (l + 1 == r)
+    {
+        D.ispeak[l] = isp(D.a, l, D.n);
+        D.t[v] = D.ispeak[l];
+        return;
+    }
+    int m = (l + r) / 2;
+    int left = 2 * v + 1;
+    int right = 2 * v + 2;
+    build(l, m, left, D);
+    build(m, r, right, D);
+    D.t[v] = (D.t[left] + D.t[right]);
+}
+int ask (int l, int r, int v, int askl, int askr, struct Tree D)
+{
+    if ((askl >= r) || (askr <= l))
+        return 0;
+    else if (l >= askl && r <= askr)
+        return D.t[v];
+    else
+    {
+        int m = (l + r) / 2;
+        int left = 2 * v + 1;
+        int right = 2 * v + 2;
+        int res = (ask(l, m, left, askl, askr, D) + ask(m, r, right, askl, askr, D));
+        return res;
+    }
+}
+void update (int l, int r, int v, int ind, int val, struct Tree D)
+{
+    if (l + 1 == r)
+    {
+        D.a[l] = val;
+        D.ispeak[l] = isp(D.a, l, D.n);
+        D.t[v] = D.ispeak[l];
+        return;
+    }
+    int m = (l + r) / 2;
+    int left = 2 * v + 1;
+    int right = 2 * v + 2;
+    if (ind < m)
+        update(l, m, left, ind, val, D);
+    else
+        update(m, r, right, ind, val, D);
+    D.t[v] = (D.t[left] + D.t[right]);
+}
+signed main()
+{
+    int n, m;
+    scanf("%lld", &n);
+    Tree T = ch_size(n);
+    for (int i = 0; i < T.n; ++i)
+    {
+        scanf("%lld", &T.a[i]);
+    }
+    build(0, T.n, 0, T);
+    scanf("%lld", &m);
+    char s[5];
+    for (int i = 0; i < m; ++i)
+    {
+        scanf("%s", &s);
+        if (s[0] == 'P')
+        {
+            int askl, askr;
+            scanf("%lld", &askl);
+            scanf("%lld", &askr);
+            ++askr;
+            int res = ask(0, T.n, 0, askl, askr, T);
+//            if (T.ispeak[askl] == 0)
+//            {
+//                res += isp(T.a + askl, 0, n - askl);
+//            }
+//            if (T.ispeak[askr - 1] == 0)
+//            {
+//                res += isp(T.a, askr - 1, askr);
+//            }
+            //Если peak 0 0 > 1 !!!!!!!!!!!!!!!!
+            printf("%lld\n", res);
+        } else
+        {
+            int ind, val;
+            scanf("%lld", &ind);
+            scanf("%lld", &val);
+            update(0, T.n, 0, ind, val, T);
+        }
+
+    }
+}
