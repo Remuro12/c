@@ -1,0 +1,72 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define int long long
+//int logs [100];
+int logs[(int)1e6 + 10];
+int gcd (int a, int b)
+{
+    if (a == 0)
+        return b;
+    if (b == 0)
+        return a;
+    if (a > b)
+        return gcd(a % b, b);
+    return gcd(a, b % a);
+}
+int ask(int l, int r, int ** sparse)
+{
+    int len = r - l + 1;
+    int level = logs[len];
+    -- level;
+    if (len == 1)
+        level = 0;
+    return gcd(sparse[level][l], sparse[level][r - (1 << level) + 1]);
+}
+int abs_ll(int x)
+{
+    if (x < 0)
+        return -x;
+    return x;
+}
+signed main()
+{
+    int n, m;
+    scanf("%lld", &n);
+
+    logs[0] = 0;
+    for (int i = 1; i < (int)1e6 + 10; ++i)
+    {
+        logs[i] = logs[i / 2] + 1;
+    }
+    int a[n];
+    for (int i = 0; i < n; ++i)
+    {
+        scanf("%lld", &a[i]);
+        a[i] = abs_ll(a[i]);
+    }
+    int ** sparse = malloc(logs[n] * sizeof(int*));
+    for (int i = 0; i < logs[n]; ++i)
+        sparse[i] = calloc(n, sizeof(int));
+    for (int i = 0; i < n; ++i)
+        sparse[0][i] = a[i];
+    for (int level = 1; (1 << level) <= n; ++level)
+    {
+        for (int i = 0; i + (1 << level)<= n; ++i)
+        {
+            sparse[level][i] =
+                    gcd(sparse[level - 1][i], sparse[level - 1][i + (1 << (level - 1))]);
+        }
+    }
+    int l, r;
+    scanf("%lld", &m);
+    for (int i = 0; i < m; ++i)
+    {
+        scanf("%lld", &l);
+        scanf("%lld", &r);
+        int res = ask(l, r, sparse);
+        printf("%lld\n", res);
+    }
+}
+
