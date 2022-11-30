@@ -1,0 +1,98 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define int long long
+//int logs [100];
+typedef struct Task{
+    int low, high;
+} Task;
+typedef struct Stack
+{
+    int cap;
+    int top;
+    struct Task *data;
+} Stack;
+void init(Stack *s, int n)
+{
+    (*s).data = malloc(sizeof(Task) * n);
+    (*s).cap = n;
+    (*s).top = 0;
+}
+Task init_Task(int a, int b)
+{
+    Task T;
+    T.low = a;
+    T.high = b;
+    return T;
+}
+void push(Stack *s, Task T)
+{
+    if ((*s).cap == (*s).top)
+        printf("stack overflow\n");
+    else
+    {
+        (*s).data[(*s).top] = T;
+        ++(*s).top;
+    }
+}
+Task pop(Stack *s)
+{
+    if ((*s).top > 0)
+        --(*s).top;
+    return (*s).data[(*s).top];
+}
+void swap (int * base, int i, int j)
+{
+    int* t = malloc(sizeof(int));
+    memcpy(t, base + i, sizeof(int));
+    memcpy(base + i, base + j, sizeof(int));
+    memcpy(base + j, t, sizeof(int));
+}
+int partition(int* base, int l, int r)
+{
+    int i = l;
+    int j = l;
+    while (j < r)
+    {
+        if (*(base + j) < *(base + r))
+        {
+            swap(base, i, j);
+            ++i;
+        }
+        ++j;
+    }
+    swap(base, i, r);
+    return i;
+}
+void stackqsort (int a[], int n)
+{
+    Stack s;
+    init(&s, n);
+    push(&s, init_Task(0, n - 1));
+    while (s.top != 0)
+    {
+        Task cur = pop(&s);
+        if (cur.low < cur.high)
+        {
+            int div = partition(a, cur.low, cur.high);
+            Task new1 = init_Task(cur.low, div - 1);
+            Task new2 = init_Task(div + 1, cur.high);
+            push(&s, new1);
+            push(&s, new2);
+        }
+    }
+
+}
+signed main()
+{
+    int n;
+    scanf("%d", &n);
+    int a[n];
+    for (int i = 0; i < n; ++i)
+        scanf("%d", &a[i]);
+    stackqsort(a, n);
+    for (int i = 0; i < n; ++i)
+        printf("%d ", a[i]);
+}
+
