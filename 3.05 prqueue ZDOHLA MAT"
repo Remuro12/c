@@ -1,0 +1,26 @@
+typedef struct vert
+{
+    int key,value;
+}vertex;
+typedef struct prQ
+{
+    int cap;
+    int count;
+    vert *heap;
+} prQ;
+int empty(prQ * q)
+{
+    return (*q).count == 0;
+}
+void swap(prQ *q, int i, int j)
+{
+    vert t = (*q).heap[i];
+    (*q).heap[i] = (*q).heap[j];
+    (*q).heap[j] = t;
+}
+void init(prQ *q, int n)
+{
+    (*q).heap = (vert*)malloc(sizeof(vert) * n);
+    (*q).count = 0;
+    (*q).cap = n;
+}
