@@ -1,0 +1,113 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define int long long
+int inf = 3e9;
+int max(int a, int b)
+{
+    if (a > b)
+        return a;
+    return b;
+}
+typedef struct Stack
+{
+    int cap;
+    int top;
+    int *data;
+    int *cmax;
+} Stack;
+void init(Stack *s, int n)
+{
+    (*s).data = malloc(sizeof(int) * n);
+    (*s).cmax = malloc(sizeof(int) * n);
+    (*s).cap = n;
+    (*s).top = 0;
+}
+void push(Stack *s, int x)
+{
+    if ((*s).cap == (*s).top)
+        printf("stack overflow\n");
+    else
+    {
+        (*s).data[(*s).top] = x;
+        if ((*s).top == 0)
+            (*s).cmax[(*s).top] = x;
+        else
+            (*s).cmax[(*s).top] = max(x, (*s).cmax[(*s).top - 1]);
+        ++(*s).top;
+    }
+//    for (int i = 0; i < (*s).top; ++i)
+//    {
+//        printf("%lld ", (*s).cmax[i]);
+//    }
+//    printf("\n");
+}
+int pop(Stack *s)
+{
+    if ((*s).top > 0)
+        --(*s).top;
+//    for (int i = 0; i < (*s).top; ++i)
+//    {
+//        printf("%lld ", (*s).cmax[i]);
+//    }
+//    printf("\n");
+    return (*s).data[(*s).top];
+}
+int Max(Stack*s)
+{
+    if ((*s).top > 0)
+        return (*s).cmax[(*s).top - 1];
+    else
+        return -inf;
+}
+int empty(Stack *s)
+{
+    return (*s).top == 0;
+}
+
+signed main()
+{
+    int n;
+    scanf("%d", &n);
+    Stack s_for_add, s_for_pop;
+    init(&s_for_add, n);
+    init(&s_for_pop, n);
+    int x, ans, cur;
+    for (int i = 0; i < n; ++i)
+    {
+        char command [6];
+        scanf("%s", &command);
+        if (strcmp(command, "ENQ") == 0)
+        {
+            scanf("%lld", &x);
+            push(&s_for_add, x);
+        }
+        else if (strcmp(command, "DEQ") == 0)
+        {
+            if (empty(&s_for_pop))
+            {
+                while (!empty(&s_for_add))
+                {
+                    cur = pop(&s_for_add);
+                    push(&s_for_pop, cur);
+                }
+            }
+            ans = pop(&s_for_pop);
+            printf("%lld", ans);
+            printf("\n");
+        } else if (strcmp(command, "MAX") == 0)
+        {
+            ans = max(Max(&s_for_add), Max(&s_for_pop));
+            printf("%lld", ans);
+            printf("\n");
+        }
+        else if (strcmp(command, "EMPTY") == 0)
+        {
+            if (empty(&s_for_pop) && empty(&s_for_add))
+                printf("true");
+            else
+                printf("false");
+            printf("\n");
+        }
+    }
+}
