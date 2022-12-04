@@ -1,0 +1,117 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define int long long
+int inf = 3e9;
+int max(int a, int b)
+{
+    if (a > b)
+        return a;
+    return b;
+}
+typedef struct vert
+{
+    int key,value;
+}vertex;
+typedef struct prQ
+{
+    int cap;
+    int count;
+    vert *heap;
+} prQ;
+int empty(prQ * q)
+{
+    return (*q).count == 0;
+}
+void swap(prQ *q, int i, int j)
+{
+    vert t = (*q).heap[i];
+    (*q).heap[i] = (*q).heap[j];
+    (*q).heap[j] = t;
+}
+void init(prQ *q, int n)
+{
+    (*q).heap = (vert*)malloc(sizeof(vert) * n);
+    (*q).count = 0;
+    (*q).cap = n;
+}
+void initv (vert *v, int x)
+{
+    (*v).key = x;
+    (*v).value = x;
+}
+int extract(prQ *q)
+{
+    int res = (*q).heap[0].value;
+    --(*q).count;
+    (*q).heap[0] = (*q).heap[(*q).count];
+    int i = 0;
+    int l, r, j;
+    int n = (*q).count;
+    while(1)
+    {
+        j = i;
+        l = 2 * i + 1;
+        r = 2 * i + 2;
+        if ((l < n) && ((*q).heap[l].key < (*q).heap[i].key))
+        {
+            i = l;
+        }
+        if ((r < n) && ((*q).heap[r].key < (*q).heap[i].key))
+        {
+            i = r;
+        }
+        if (i == j)
+            break;
+        swap(q, i, j);
+    }
+    return res;
+}
+void insert(prQ *q, int x)
+{
+    vert ins;
+    initv(&ins, x);
+    int i = (*q).count;
+    (*q).heap[i] = ins;
+    ++(*q).count;
+    while ((i > 0) && ((*q).heap[(i - 1) / 2].key > (*q).heap[i].key))
+    {
+        int j = (i - 1) / 2;
+        swap(q, i, j);
+        i = j;
+    }
+//    for (int j = 0; j < (*q).count; ++j)
+//    {
+//        printf("%lld ", (*q).heap[j].value);
+//    }
+//    printf("\n");
+}
+
+signed main()
+{
+    int n;
+    scanf("%lld", &n);
+    int sz[n];
+    int total = 0;
+    for (int i = 0; i < n; ++i)
+    {
+        scanf("%lld", &sz[i]);
+        total += sz[i];
+    }
+    int x;
+    prQ q;
+    init(&q, total + 10);
+    for (int i = 0; i < n; ++i)
+    {
+        for (int j = 0; j < sz[i]; ++j)
+        {
+            scanf("%lld", &x);
+            insert(&q, x);
+        }
+    }
+    while(!empty(&q))
+    {
+        int cur = extract(&q);
+        printf("%lld ", cur);
+    }
+}
