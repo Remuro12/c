@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define int long long
+int inf = 3e9;
+int max(int a, int b)
+{
+    if (a > b)
+        return a;
+    return b;
+}
+typedef struct Elem{
+    struct Elem *prev, *next;
+    int v;
+}Elem;
+void insaft(Elem *a, Elem *x)
+{
+    Elem *b;
+    b = (*a).next;
+    (*x).prev = a;
+    (*x).next = b;
+    (*a).next = x;
+    (*b).prev = x;
+}
+void del(struct Elem *x)
+{
+    Elem *a = (Elem*)malloc(sizeof(Elem)), *b = (Elem*)malloc(sizeof(Elem));
+    a = (*x).prev;
+    b = (*x).next;
+    (*a).next = b;
+    (*b).prev = a;
+    (*x).prev = NULL;
+    (*x).next = NULL;
+}
+void inssort(Elem *head)
+{
+    Elem *cur;
+    Elem *i;
+    cur = (*head).next;
+    while (cur != head)
+    {
+        i = (*cur).prev;
+        while ((i != head) && ((*i).v > (*cur).v))
+            i = (*i).prev;
+        del(cur);
+        insaft(i, cur);
+        cur = (*cur).next;
+    }
+}
+signed main()
+{
+    int n;
+    scanf("%lld", &n);
+    Elem *head = (Elem*)malloc(sizeof(Elem));
+    (*head).next = head;
+    (*head).prev = head;
+    for (int i = 0; i < n; i++)
+    {
+        Elem *cur = (Elem*)malloc(sizeof(Elem));
+        scanf("%lld", &(*cur).v);
+        insaft(head, cur);
+        printf("%lld %lld cur\n",  (*(*cur).prev).v,(*(*cur).next).v);
+        printf("%lld %lld head\n",  (*(*head).prev).v,(*(*head).next).v);
+    }
+//    cur = (*head).next;
+//    while (cur != head)
+//    {
+//        int t = (*cur).v;
+//        printf("%lld ", t);
+//        cur = (*cur).next;
+//    }
+//    inssort(head);
+//    cur = (*head).next;
+//    while (cur != head)
+//    {
+//        printf("%lld ", (*cur).v);
+//        cur = (*cur).next;
+//    }
+//    cur = (*head).next;
+//    while (cur != head)
+//    {
+//        Elem *clear = cur;
+//        cur = (*cur).next;
+//        free(clear);
+//    }
+//    free(head);
+}
