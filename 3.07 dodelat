@@ -59,29 +59,20 @@ signed main()
         Elem *cur = (Elem*)malloc(sizeof(Elem));
         scanf("%lld", &(*cur).v);
         insaft(head, cur);
-        printf("%lld %lld cur\n",  (*(*cur).prev).v,(*(*cur).next).v);
-        printf("%lld %lld head\n",  (*(*head).prev).v,(*(*head).next).v);
     }
-//    cur = (*head).next;
-//    while (cur != head)
-//    {
-//        int t = (*cur).v;
-//        printf("%lld ", t);
-//        cur = (*cur).next;
-//    }
-//    inssort(head);
-//    cur = (*head).next;
-//    while (cur != head)
-//    {
-//        printf("%lld ", (*cur).v);
-//        cur = (*cur).next;
-//    }
-//    cur = (*head).next;
-//    while (cur != head)
-//    {
-//        Elem *clear = cur;
-//        cur = (*cur).next;
-//        free(clear);
-//    }
-//    free(head);
+    inssort(head);
+    Elem *cur = (*head).next;
+    while (cur != head)
+    {
+        printf("%lld ", (*cur).v);
+        cur = (*cur).next;
+    }
+    cur = (*head).next;
+    while (cur != head)
+    {
+        Elem *clear = cur;
+        cur = (*cur).next;
+        free(clear);
+    }
+    free(head);
 }
