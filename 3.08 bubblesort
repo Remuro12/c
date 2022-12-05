@@ -1,0 +1,103 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define int long long
+int inf = 3e9;
+int max(int a, int b)
+{
+    if (a > b)
+        return a;
+    return b;
+}
+int islet(char x)
+{
+    return (x >= 'a' && x <= 'z') || (x >= 'A' && x <= 'Z');
+}
+typedef struct Elem{
+    struct Elem *next;
+    int len;
+    char * s;
+}Elem;
+void insaft(Elem *a, char* word)
+{
+    Elem * b = (*a).next;
+    Elem *x = (Elem*)malloc(sizeof(Elem));
+    (*x).len = strlen(word);
+    (*x).s = malloc(sizeof(char*));
+    strcpy((*x).s,word);
+    (*x).next = b;
+    (*a).next = x;
+}
+int cmp (Elem *i, Elem *j)
+{
+    return (*i).len > (*j).len;
+}
+void swap (Elem *i, Elem *j, Elem* prev)
+{
+    Elem *k = (*j).next;
+    (*prev).next = j;
+    (*j).next = i;
+    (*i).next = k;
+}
+Elem *bsort(Elem *list)
+{
+
+    Elem *cap = NULL;
+    while (cap != (*list).next)
+    {
+        Elem *i = (*list).next, *prev = list;
+        while ((*i).next != cap)
+        {
+            if (cmp(i, (*i).next))
+            {
+                swap(i, (*i).next, prev);
+            }
+            i = (*(*prev).next).next;
+            prev = (*prev).next;
+//            printf("pr:%s ", (*prev).s);
+//            printf("i:%s\n", (*i).s);
+        }
+        cap = i;
+    }
+    return list;
+}
+
+signed main()
+{
+    char s[1000];
+    fgets(s,1000,stdin);
+    int n = strlen(s);
+    char cword[n];
+    int u = 0;
+    Elem *l = (Elem*)malloc(sizeof(Elem));
+    (*l).next=NULL;
+    (*l).len = -inf;
+    Elem *last= l;
+    for(int i = 0; i <= n; i++)
+    {
+        if (islet(s[i]))
+        {
+            cword[u]=s[i];
+            ++u;
+        }
+        else if (i==0 || islet(s[i - 1]))
+        {
+            cword[u] = 0;
+            insaft(last,cword);
+            last = (*last).next;
+            u = 0;
+        }
+    }
+    l = bsort(l);
+    Elem *x=(*l).next, *t;
+    while(x!=NULL)
+    {
+        t=(*x).next;
+        printf("%s ", (*x).s);
+        free((*x).s);
+        free(x);
+        x=t;
+    }
+    printf("\n");
+    free(l);
+}
